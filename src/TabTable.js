@@ -1,30 +1,10 @@
 import React, { Component } from 'react';
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs';
-import BootstrapTable from 'react-bootstrap-table-next'
-import Dropdown from 'react-dropdown'
-import 'react-dropdown/style.css'
 import 'react-tabs/style/react-tabs.css';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 import './TabTable.css';
-
-const options = ["one", "two", "three"]
+import MyTable from './MyTable'
 
 export default class TabTable extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: [{id: 1, sentence: "s1"}, {id: 2, sentence: "s2"},
-        {id: 3, sentence: "s3"}],
-      columns: [{dataField: "id", text: "ID", attrs: {width: "10%", textAlign: "center"}},
-                {dataField: "sentence", text: "SENTENCE", attrs: {width: "65%"}},
-                {dataField: "critique", text: "CRITIQUE", formatter: (cell, row, rowIndex, colIndex) => {
-                  return <Dropdown options={options} placeholder="Select an option" width="25%"/>;
-        }}],
-
-    };
-  }
-
   render() {
     return (
       <div>
@@ -35,10 +15,20 @@ export default class TabTable extends Component {
 
           <div>
           {Array(this.props.titles.length).fill().map(
-            (e,i) =>  <TabPanel>
-                        <BootstrapTable keyField="id" data={this.props.data[i]} columns={this.state.columns}
-                        striped hover condensed/>
+            (e,i) =>
+                      this.props.selectionValuesDict ?
+                      <TabPanel>
+                        <MyTable KeyField="id" data={this.props.data[i]} columnValues={this.props.selectionValuesDict} tabID={i}
+                        onSelectChange={this.props.onSelectChange.bind(this, i)} checkSelections={this.props.checkSelections}
+                        selectedUsers={this.props.selectedUsers} subtitleIndexArray={this.props.subtitleIndexArray[i]}/>
+                      </TabPanel>
+                      :
+                      <TabPanel>
+                        <MyTable KeyField="id" data={this.props.data[i]} tabID={i}
+                        onSelectChange={this.props.onSelectChange.bind(this, i)} checkSelections={this.props.checkSelections}
+                        subtitleIndexArray={this.props.subtitleIndexArray[i]}/>
                       </TabPanel>)}
+
           </div>
         </Tabs>
       </div>
